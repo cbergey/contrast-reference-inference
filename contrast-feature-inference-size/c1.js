@@ -6,7 +6,7 @@
 
 // ---------------- PARAMETERS ------------------
 
-// must be a multiple of 4 
+
 var numtrials = 6;
 
 // ---------------- HELPER ------------------
@@ -127,11 +127,15 @@ var experiment = {
 
 	rtsearch: [],
 
+	clickDisabled: true,
+
 	rttest: [],
 
 	data: [],
 
 	attnselected: "",
+
+	chosenobject: "",
 
 	targetpos: 0,
 
@@ -193,7 +197,36 @@ var experiment = {
     	document.body.style.background = "black";
     },
 
-    
+    afterSelected: function() {
+    	setTimeout(function() {
+    				$("#sinstructions2").fadeOut()
+					$("#bubble2").attr("src", "stim-images/speechbubble2.jpg");
+					$("#speech2").html("Here you go!");
+					$("#bubble2").fadeTo(0,1)
+					$("#speech2").fadeTo(0,1)
+					$("#bubble2").show()
+					$("#speech2").show()
+				}, 1000);
+
+    		console.log(experiment.chosenname)
+    		console.log(experiment.chosenobject)
+
+		    setTimeout(function() {
+					$(experiment.chosenobject).attr("src", "stim-images/emptyimage.jpg");
+					$(experiment.chosenobject).css({"border-color": "#FFFFFF", 
+						"border-width":"2px", 
+						"border-style":"solid"});
+					$("#receiver").attr("src", experiment.chosenname);
+					$("#receiver").show()
+				}, 1500);
+
+		    setTimeout(function() {
+		    		$("#bubble2").fadeTo(100,0.5)
+					$("#speech2").fadeTo(100,0.5)
+					experiment.clickDisabled = false;
+  	 				$( "#totestbutton" ).attr('disabled', false);
+				}, 2500);
+    },
 
 	//concatenates all experimental variables into a string which represents one "row" of data in the eventual csv, to live in the server
 	processOneRow: function() {
@@ -261,16 +294,19 @@ var experiment = {
 			$("#sobject1").hide();
 			$("#sobject2").hide();
 			$("#sobject3").hide();
+			$("#sobject4").hide();
+			$("#sobject5").hide();
+			$("#sobject6").hide();
 			$("#bubble1").hide()
 			$("#speech1").hide()
 			$("#targetimg").hide()
 
 
-			clickDisabled = true;
+			experiment.clickDisabled = true;
   	 		$( "#totestbutton" ).attr('disabled', true);
 
-			var rightstims = ["target", "distractor1"];
-			var leftstims = ["distractor2", "distractor3"];
+			var rightstims = ["target", "distractor1","distractor2"];
+			var leftstims = ["distractor3", "distractor4", "distractor5"];
 			rightstims = shuffle(rightstims);
 			leftstims = shuffle(leftstims);
 
@@ -291,70 +327,183 @@ var experiment = {
 			$("#alien2").attr("src", "stim-images/alien2.png");
 			$("#bubble1").attr("src", "stim-images/speechbubble.jpg");
 			
-			
+			console.log(experiment.searchtype)
 
 			if (experiment.searchtype == "contrast") {
 				for (i = 0; i < rightstims.length; i++) {
 					if (rightstims[i] == "target") {
-						var targetnum = 2+i+1;
+						var targetnum = 3+i+1;
 						var targetobject = "#sobject" + targetnum;
-						experiment.targetpos = 2+i+1;
+						experiment.targetpos = 3+i+1;
 						$(targetobject).attr("src", "stim-images/object" + experiment.targetshape + experiment.targetcolor + experiment.targetsize + ".jpg");
 					} else if (rightstims[i] == "distractor1") {
-						var object = "#sobject" + (2+i+1);
-						experiment.foilpos = 2+i+1;
+						var object = "#sobject" + (3+i+1);
+						experiment.foilpos = 3+i+1;
 						$(object).attr("src", "stim-images/object" + experiment.targetshape + experiment.targetcolor + experiment.distractorsize + ".jpg");
+					} else if (rightstims[i] == "distractor2") {
+						var object = "#sobject" + (3+i+1);
+						experiment.lurepos = 3+i+1;
+						$(object).attr("src", "stim-images/object" + experiment.distractorshape1 + experiment.targetcolor + experiment.targetsize + ".jpg");
 					} 
-					if (leftstims[i] == "distractor2") {
-						var object = "#sobject" + (i+1);
-						$(object).attr("src", "stim-images/object" + experiment.distractorshape1 + experiment.targetcolor + experiment.distractorsize + ".jpg");
-					} else if (leftstims[i] == "distractor3") {
+					if (leftstims[i] == "distractor3") {
 						var object = "#sobject" + (i+1);
 						$(object).attr("src", "stim-images/object" + experiment.distractorshape2 + experiment.targetcolor + experiment.targetsize + ".jpg");
+					} else if (leftstims[i] == "distractor4") {
+						var object = "#sobject" + (i+1);
+						$(object).attr("src", "stim-images/object" + experiment.distractorshape1 + experiment.targetcolor + experiment.distractorsize + ".jpg");
+					} else if (leftstims[i] == "distractor5") {
+						var object = "#sobject" + (i+1);
+						$(object).attr("src", "stim-images/object" + experiment.distractorshape1 + experiment.targetcolor + experiment.distractorsize + ".jpg");
 					}
 				}
   			} else if (experiment.searchtype == "differentsizes") {
 				for (i = 0; i < rightstims.length; i++) {
 					if (rightstims[i] == "target") {
-						var targetnum = 2+i+1;
+						var targetnum = 3+i+1;
 						var targetobject = "#sobject" + targetnum;
-						experiment.targetpos = 2+i+1;
+						experiment.targetpos = 3+i+1;
 						$(targetobject).attr("src", "stim-images/object" + experiment.targetshape + experiment.targetcolor + experiment.targetsize + ".jpg");
 					} else if (rightstims[i] == "distractor1") {
-						var object = "#sobject" + (2+i+1);
-						$(object).attr("src", "stim-images/object" + experiment.distractorshape2 + experiment.targetcolor + experiment.distractorsize + ".jpg");
+						var object = "#sobject" + (3+i+1);
+						$(object).attr("src", "stim-images/object" + experiment.distractorshape1 + experiment.targetcolor + experiment.distractorsize + ".jpg");
+					} else if (rightstims[i] == "distractor2") {
+						var object = "#sobject" + (3+i+1);
+						$(object).attr("src", "stim-images/object" + experiment.distractorshape1 + experiment.targetcolor + experiment.distractorsize + ".jpg");
 					}
-					if (leftstims[i] == "distractor2") {
-						var object = "#sobject" + (i+1);
-						$(object).attr("src", "stim-images/object" + experiment.distractorshape1 + experiment.targetcolor + experiment.targetsize + ".jpg");
-					} else if (leftstims[i] == "distractor3") {
+					if (leftstims[i] == "distractor3") {
 						var object = "#sobject" + (i+1);
 						experiment.foilpos = i+1;
 						$(object).attr("src", "stim-images/object" + experiment.targetshape + experiment.targetcolor + experiment.distractorsize + ".jpg");
+					} else if (leftstims[i] == "distractor4") {
+						var object = "#sobject" + (i+1);
+						$(object).attr("src", "stim-images/object" + experiment.distractorshape1 + experiment.targetcolor + experiment.targetsize + ".jpg");
+					} else if (leftstims[i] == "distractor5") {
+						var object = "#sobject" + (i+1);
+						$(object).attr("src", "stim-images/object" + experiment.distractorshape2 + experiment.targetcolor + experiment.targetsize + ".jpg");
 					}
 				}
   			} else if (experiment.searchtype == "samesize") {
 				for (i = 0; i < rightstims.length; i++) {
 					if (rightstims[i] == "target") {
-						var targetnum = 2+i+1;
+						var targetnum = 3+i+1;
 						var targetobject = "#sobject" + targetnum;
-						experiment.targetpos = 2+i+1;
+						experiment.targetpos = 3+i+1;
 						$(targetobject).attr("src", "stim-images/object" + experiment.targetshape + experiment.targetcolor + experiment.targetsize + ".jpg");
 					} else if (rightstims[i] == "distractor1") {
-						var object = "#sobject" + (2+i+1);
+						var object = "#sobject" + (3+i+1);
+						$(object).attr("src", "stim-images/object" + experiment.distractorshape1 + experiment.targetcolor + experiment.targetsize + ".jpg");
+					} else if (rightstims[i] == "distractor2") {
+						var object = "#sobject" + (3+i+1);
 						$(object).attr("src", "stim-images/object" + experiment.distractorshape2 + experiment.targetcolor + experiment.targetsize + ".jpg");
 					}
-					if (leftstims[i] == "distractor2") {
-						var object = "#sobject" + (i+1);
-						$(object).attr("src", "stim-images/object" + experiment.distractorshape1 + experiment.targetcolor + experiment.distractorsize + ".jpg");
-					} else if (leftstims[i] == "distractor3") {
+					if (leftstims[i] == "distractor3") {
 						var object = "#sobject" + (i+1);
 						experiment.foilpos = i+1;
 						$(object).attr("src", "stim-images/object" + experiment.targetshape + experiment.targetcolor + experiment.distractorsize + ".jpg");
+					} else if (leftstims[i] == "distractor4") {
+						var object = "#sobject" + (i+1);
+						$(object).attr("src", "stim-images/object" + experiment.distractorshape1 + experiment.targetcolor + experiment.distractorsize + ".jpg");
+					} else if (leftstims[i] == "distractor5") {
+						var object = "#sobject" + (i+1);
+						$(object).attr("src", "stim-images/object" + experiment.distractorshape1 + experiment.targetcolor + experiment.distractorsize + ".jpg");
 					}
 				}
-  			}
-	
+			}
+
+
+			$(sobject1).css({"border-color": "#FFFFFF", 
+				"border-width":"2px", 
+				"border-style":"solid"});
+			$(sobject2).css({"border-color": "#FFFFFF", 
+				"border-width":"2px", 
+				"border-style":"solid"});
+			$(sobject3).css({"border-color": "#FFFFFF", 
+				"border-width":"2px", 
+				"border-style":"solid"});
+
+
+			if (experiment.counter == 1) {
+				$( "#sobject4" ).click(function() {
+
+					$(sobject4).css({"border-color": "#000000", 
+						"border-width":"2px", 
+						"border-style":"solid"});
+
+					experiment.rtsearch = Date.now() - experiment.starttime;
+
+						//experiment.choseunique = experiment.uniqueness[0];
+
+						if (experiment.targetpos == 4) {
+							experiment.chosetarget = true;
+						} else {
+							experiment.chosetarget = false;
+							if (experiment.lurepos == 4) {
+								experiment.choselure = true;
+							}
+						}
+
+						experiment.chosenname = $("#sobject4").attr('src');
+						experiment.chosenobject = "#sobject4"
+
+						experiment.afterSelected()
+
+					});
+				$( "#sobject5" ).click(function() {
+
+					$(sobject5).css({"border-color": "#000000", 
+						"border-width":"2px", 
+						"border-style":"solid"});
+
+					experiment.rtsearch = Date.now() - experiment.starttime;
+
+						//experiment.choseunique = experiment.uniqueness[1];
+
+						if (experiment.targetpos == 5) {
+							experiment.chosetarget = true;
+						} else {
+							experiment.chosetarget = false;
+							experiment.chosenname = $( "#sobject5" ).attr('src');
+							if (experiment.lurepos == 5) {
+								experiment.choselure = true;
+							}
+
+						}
+
+						experiment.chosenname = $( "#sobject5" ).attr('src');
+						experiment.chosenobject = "#sobject5"
+
+						experiment.afterSelected()
+						
+
+					});
+				$( "#sobject6" ).click(function() {
+
+					$(sobject6).css({"border-color": "#000000", 
+						"border-width":"2px", 
+						"border-style":"solid"});
+
+					experiment.rtsearch = Date.now() - experiment.starttime;
+
+						//experiment.choseunique = experiment.uniqueness[2];
+
+						if (experiment.targetpos == 6) {
+							experiment.chosetarget = true;
+						} else {
+							experiment.chosetarget = false;
+							if (experiment.lurepos == 6) {
+								experiment.choselure = true;
+							}
+
+						}
+
+						experiment.chosenname = $( "#sobject6" ).attr('src')
+						experiment.chosenobject = "#sobject6"
+
+						
+						experiment.afterSelected()
+
+					});
+			}
 
 			if (experiment.sizeasked == true) {
 				$("#speech1").html("Hey, pass me the <b>" + experiment.targetsize + " " +  experiment.targetword[0] + "</b>.");
@@ -369,6 +518,8 @@ var experiment = {
 				$("#sobject2").show();
 				$("#sobject3").show();
 				$("#sobject4").show();
+				$("#sobject5").show();
+				$("#sobject6").show();
 				$("#alien1").show();
 				$("#alien2").show();
 				}, 250);
@@ -388,26 +539,11 @@ var experiment = {
 				}, 4500);
 
 		    setTimeout(function() {
-					$("#bubble2").attr("src", "stim-images/speechbubble2.jpg");
-					$("#speech2").html("Here you go!");
-					$("#bubble2").fadeTo(0,1)
-					$("#speech2").fadeTo(0,1)
-					$("#bubble2").show()
-					$("#speech2").show()
+		    		$("#sinstructions2").html("Which one do you think the blue alien will pass to the green alien? Click on your selection.")
+		    		$("#sinstructions2").fadeIn()
 				}, 5000);
 
-		    setTimeout(function() {
-					$(targetobject).attr("src", "stim-images/emptyimage.jpg");
-					$("#receiver").attr("src", "stim-images/object" + experiment.targetshape + experiment.targetcolor + experiment.targetsize + ".jpg");
-					$("#receiver").show()
-				}, 6000);
 
-		    setTimeout(function() {
-		    		$("#bubble2").fadeTo(100,0.5)
-					$("#speech2").fadeTo(100,0.5)
-					clickDisabled = false;
-  	 				$( "#totestbutton" ).attr('disabled', false);
-				}, 6500);
 
 		    experiment.starttime = Date.now();
 		    
@@ -420,6 +556,8 @@ var experiment = {
 			$("#sobject2").hide();
 			$("#sobject3").hide();
 			$("#sobject4").hide();
+			$("#sobject5").hide();
+			$("#sobject6").hide();
 			$("#receiver").hide();
 			$("#bubble1").hide()
 			$("#speech1").hide()
@@ -429,12 +567,13 @@ var experiment = {
 			$("#alien1").hide();
 			$("#alien2").hide();
 			
-			$("#sinstructions").hide();
+			$("#sinstructions1").hide();
+			$("#sinstructions2").hide();
 
 
 			$("#trainingstage").hide();
 
-			clickDisabled = true;
+			experiment.clickDisabled = true;
   	 		$( "#nexttrialbutton" ).attr('disabled', true);
 
 	    	$("#tinstructions").html("On this planet, what percentage of " + experiment.targetword[1] + " do you think are the size shown below? <br> Use the slider below to indicate a response.");
@@ -448,6 +587,7 @@ var experiment = {
 	    	experiment.percentage = document.getElementById("slider").value = 0;
 
 		    $("#testingstage").fadeIn();
+		    $("#sinstructions2").html("Which one do you think the blue alien will pass to the green alien? Click on your selection.")
 		    experiment.starttime = Date.now();
 		}
 		
